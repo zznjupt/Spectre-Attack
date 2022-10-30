@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <meta name="description" content="">
 
-    <title>Transient Execution Attacks</title>
+    <title>Spectre Attacks and Defences</title>
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -32,59 +32,9 @@
             <div class="col-lg-9 col-md-9 col-sm-9">
             <form onsubmit="filter(); return false;">
             <div class="form-group">
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" id="toggleSpectre" checked>
-                    <label class="custom-control-label" for="toggleSpectre">Spectre</label>
-                </div>
-                <!-- <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" id="toggleMeltdown" checked>
-                    <label class="custom-control-label" for="toggleMeltdown">Meltdown</label>
-                </div> -->
 
                 <div class="button-group custom-control-inline">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Buffer</button>
-                    <ul class="dropdown-menu">
-                        <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="toggleL1" checked>
-                                <label class="custom-control-label" for="toggleL1">L1 cache</label>
-                            </div>
-                        </a></li>
-                        <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="toggleLFB" checked>
-                                <label class="custom-control-label" for="toggleLFB">Line fill buffer</label>
-                            </div>
-                        </a></li>
-                        <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="toggleSB" checked>
-                                <label class="custom-control-label" for="toggleSB">Store buffer</label>
-                            </div>
-                        </a></li>
-                        <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="toggleLP" checked>
-                                <label class="custom-control-label" for="toggleLP">Load ports</label>
-                            </div>
-                        </a></li>
-                        <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="toggleREG" checked>
-                                <label class="custom-control-label" for="toggleREG">CPU registers</label>
-                            </div>
-                        </a></li>
-                       <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="toggleMEM" checked>
-                                <label class="custom-control-label" for="toggleMEM">Memory</label>
-                            </div>
-                        </a></li>
-                    </ul>
-                </div>
-
-                <div class="button-group custom-control-inline">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Vendor</button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">ISA</button>
                     <ul class="dropdown-menu">
                         <li>&nbsp;<a>
                             <div class="custom-control custom-checkbox custom-control-inline">
@@ -104,69 +54,16 @@
                                 <label class="custom-control-label" for="toggleAMD">AMD</label>
                             </div>
                         </a></li>
-                        <!--
                         <li>&nbsp;<a>
                             <div class="custom-control custom-checkbox custom-control-inline">
                                 <input type="checkbox" class="custom-control-input" id="toggleIBM" checked>
-                                <label class="custom-control-label" for="toggleIBM">IBM</label>
+                                <label class="custom-control-label" for="togglerRISC-V">RISC-V</label>
                             </div>
                         </a></li>
-                        -->
+                       
                     </ul>
                 </div>
 
-                <div class="button-group custom-control-inline">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">More filters</button>
-                    <ul class="dropdown-menu">
-                        <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="toggleTodo">
-                                <label class="custom-control-label" for="toggleTodo">Unexplored</label>
-                            </div>
-                        </a></li>
-                        <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="toggleFails">
-                                <label class="custom-control-label" for="toggleFails">Non-working</label>
-                            </div>
-                        </a></li>
-                        <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="toggleWorking" checked>
-                                <label class="custom-control-label" for="toggleWorking">Working</label>
-                            </div>
-                        </a></li>
-                        <hr>
-                        <!--
-                        <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="togglePaper" checked>
-                                <label class="custom-control-label" for="togglePaper">Academic paper</label>
-                            </div>
-                        </a></li>
-                        <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="toggleNoPaper" checked>
-                                <label class="custom-control-label" for="toggleNoPaper">No academic paper</label>
-                            </div>
-                        </a></li>
-                        <hr>
-                        -->
-                        <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="togglePoC" checked>
-                                <label class="custom-control-label" for="togglePoC">With PoC</label>
-                            </div>
-                        </a></li>
-                        <li>&nbsp;<a>
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="toggleNoPoC" checked>
-                                <label class="custom-control-label" for="toggleNoPoC">Without PoC</label>
-                            </div>
-                        </a></li>
-
-                    </ul>
-                </div>
 
                 <div class="custom-control-inline">
                     <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" id="search">
@@ -209,13 +106,14 @@
                         </button>
                       </div>
                       <div class="modal-body">
-                        @inproceedings{Canella2019extended,<br>
+                        <!-- @inproceedings{Canella2019extended,<br>
                         &nbsp;&nbsp;title = {{A Systematic Evaluation of Transient Execution Attacks and Defenses}},<br>
                         &nbsp;&nbsp;author = {Canella, Claudio and Van Bulck, Jo and Schwarz, Michael and Lipp, Moritz and von Berg, Benjamin and Ortner, Philipp and Piessens, Frank and Evtyushkin, Dmitry and Gruss, Daniel},<br>
                         &nbsp;&nbsp;booktitle = {USENIX Security Symposium},<br>
                         &nbsp;&nbsp;year = {2019},<br>
                         &nbsp;&nbsp;note = {extended classification tree at https://transient.fail/},<br>
-                        &nbsp;}<br>
+                        &nbsp;}<br> -->
+                        have not public or arXiv paper
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -250,7 +148,7 @@
             </div>
         </div>
     </div>
-<footer class="site-footer container-fluid"><p class="float-left"><a href="https://github.com/zznjupt/Spectre-Attack" target="_blank">Proof-of-Concept Repository</a></p><p class="float-right"> &copy; 2022 Southeast University UnisLab. All Rights Reserved. &middot; <a href="https://www.tugraz.at/en/about-this-page/legal-notice" target="_blank">Legal Notice</a></p></footer>
+<footer class="site-footer container-fluid"><p class="float-left"><a href="https://github.com/zznjupt/Spectre-Attack" target="_blank">Proof-of-Concept Repository</a></p><p class="float-right"> &copy; 2022 Southeast University UNISLAB. All Rights Reserved. </p></footer>
 
 <script>
     function replaceStr(str, replaceWhat, replaceTo){
@@ -384,7 +282,7 @@
     
     tree.refresh(data);
 
-    // $("#toggleMeltdown").click(filter);
+    $("#toggleMeltdown").click(filter);
     $("#toggleSpectre").click(filter);
 
     buildIndex();
