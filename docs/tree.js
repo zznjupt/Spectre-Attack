@@ -21,7 +21,7 @@ var data = [{
     },
     {
         id: 2,
-        title: "Spectre-type",
+        title: "Spectre-Attack",
         img: "spectre-root.svg",
         text_top: "prediction",
         description: "Spectre exploits a performance optimization in modern CPUs. Instead of waiting for the correct resolution of a branch, the CPU tries to predict the most likely outcome of the branch and starts transiently executing along the predicted path. Upon resolving the branch, the CPU discards the results of the transient execution if the prediction was wrong but does not revert changes in the microarchitecture. The prediction is based on events in the past, allowing an attacker to mistrain the predictor to leak data through the microarchitecture that should normally not be accessible to the attacker.",
@@ -32,23 +32,23 @@ var data = [{
         father: 1,
         color: color.group
     },
-    {
-        id: 3,
-        title: "Meltdown-type",
-        img: "meltdown-root.svg",
-        text_bottom: "fault/assist",
-        father: 1,
-        description: "Meltdown exploits the fact that exceptions are only raised (i.e., become architecturally visible) upon the retirement of the faulting instruction. In some microarchitectures, this property allows transient instructions ahead in the pipeline to compute on unauthorized results of the instruction that is about to suffer a fault. The CPU's in-order instruction-retirement mechanism takes care to discard any architectural effects of such computations, but secrets may leak through microarchitectural covert channels.<p/>We further classify Meltdown-type attacks based on the fault condition. A first category of <i>architectural faults</i> iterates over all possible Intel x86 exception types. A second category considers so-called <i>microarchitectural faults</i>, which are never visible at the architectural level, by branching on different conditions that provoke microcode assists.<p/>The resulting unambiguous naming scheme results in Meltdown-type attack leaves of the form “Meltdown-TC-BUF”, where TC denotes the transient cause (specific exception type or microcode assist) and BUF denotes the microarchitectural buffer responsible for the leakage.",
-        sources: [
-            sources["Lipp2018"],
-            sources["VanBulck2018"],
-            sources["VanSchaik2019"],
-            sources["Canella2019"],
-            sources["Schwarz2019"],
-            sources["Canella2018"],
-        ],
-        color: color.group
-    },
+    // {
+    //     id: 3,
+    //     title: "Meltdown-type",
+    //     img: "meltdown-root.svg",
+    //     text_bottom: "fault/assist",
+    //     father: 1,
+    //     description: "Meltdown exploits the fact that exceptions are only raised (i.e., become architecturally visible) upon the retirement of the faulting instruction. In some microarchitectures, this property allows transient instructions ahead in the pipeline to compute on unauthorized results of the instruction that is about to suffer a fault. The CPU's in-order instruction-retirement mechanism takes care to discard any architectural effects of such computations, but secrets may leak through microarchitectural covert channels.<p/>We further classify Meltdown-type attacks based on the fault condition. A first category of <i>architectural faults</i> iterates over all possible Intel x86 exception types. A second category considers so-called <i>microarchitectural faults</i>, which are never visible at the architectural level, by branching on different conditions that provoke microcode assists.<p/>The resulting unambiguous naming scheme results in Meltdown-type attack leaves of the form “Meltdown-TC-BUF”, where TC denotes the transient cause (specific exception type or microcode assist) and BUF denotes the microarchitectural buffer responsible for the leakage.",
+    //     sources: [
+    //         sources["Lipp2018"],
+    //         sources["VanBulck2018"],
+    //         sources["VanSchaik2019"],
+    //         sources["Canella2019"],
+    //         sources["Schwarz2019"],
+    //         sources["Canella2018"],
+    //     ],
+    //     color: color.group
+    // },
     {
         id: 4,
         title: "Spectre-PHT",
@@ -209,477 +209,477 @@ var data = [{
         ],
         color: color.works
     },
-    {
-        id: 8,
-        title: "Meltdown-NM-REG",
-        alias: "LazyFP",
-        father: 3,
-        description: "During a context switch, the OS has to save all the registers, including the floating point unit (FPU) and SIMD registers. These latter registers are large and saving them would slow down context switches. Therefore, CPUs allow for a lazy state switch, meaning that instead of saving the registers, the FPU is simply marked as “not available”. The first FPU instruction issued after the FPU was marked as “not available” causes a  device-not-available (#NM) exception, allowing the OS to save the FPU state of previous execution context before marking the FPU as available again. <p/> Stecklina and Prescher propose an attack on the above lazy state switch mechanism. The attack consists of three steps. In the first step, a victim performs operations loading data into the FPU registers. Then, in the second step, the CPUswitches to the attacker and marks the FPU as “not available”. The attacker now issues an instruction that uses the FPU, which generates an #NM fault. Before the faulting instruction retires, however, the CPU has already transiently executed the following instructions using data from the previous context. As such, analogous to previous Meltdown-type attacks, a malicious transient instruction sequence following the faulting instruction can encode the unauthorized FPU register contents through a microarchitectural covert channel.",
-        sources: [
-            sources["Stecklina2018"],
-            sources["Canella2018"]
-        ],
-        names: [
-            {
-                title: "Lazy FP State Restore (LazyFP)",
-                url: "https://www.cyberus-technology.de/posts/2018-06-06-intel-lazyfp-vulnerability.html"
-            },
-        ], 
-        cve: [{
-            title: "CVE-2018-3665",
-            url: "https://nvd.nist.gov/vuln/detail/CVE-2018-3665"
-        }],
-        poc: [{
-            title: "https://github.com/IAIK/transientfail",
-            url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/NM"
-        }],
-        affects: [
-            {
-                title: "Intel",
-                url: "https://www.intel.com/content/www/us/en/security-center/advisory/intel-sa-00145.html"
-            },
-        ],
-        color: color.works
-    },
-    {
-        id: 9,
-        title: "Meltdown-AC",
-        alias: "",
-        father: 3,
-        description: "Upon detecting an unaligned memory operand, the CPU may generate an alignment-check exception (#AC) when the EFLAGS.AC flag is set. In our tests on Intel CPUs, we were unable to transiently encode the results of unaligned memory accesses. We suspect that this is because #AC is generated early in the pipeline, even before the operand’s virtual address is translated to a physical one. However, this appears not to be the case on some AMD and ARM microarchitectures, on which it is possible to transiently leak data after the exception.",
-        sources: [
-            sources["Canella2018"]
-        ],
-        poc: [{
-            title: "https://github.com/IAIK/transientfail",
-            url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/AC"
-        }],
-        affects: [
-            {
-                title: "AMD",
-                url: "https://www.amd.com/system/files/documents/security-whitepaper.pdf"
-            },
-            {
-                title: "ARM",
-            },
-        ],
-        color: color.group
-    },
-    {
-        id: 67,
-        title: "Meltdown-AC-LFB",
-        alias: "RIDL",
-        img: "mds.svg",
-        father: 9,
-        description: "The RIDL addendum explained that misaligned loads due to the AC flag may leak data from line-fill buffers. Interestingly, in contrast to the main RIDL variant Meltdown-P-LFB exploiting page faults, Meltdown-AC-LFB may work even on processors enumerating RDCL_NO silicon mitigations.",
-        sources: [
-            sources["RIDLAddendum1"],
-            sources["VanSchaik2019"],
-            sources["IntelMDS"],
-        ],
-        names: [
-            {
-                title: "Rogue In-flight Data Load (RIDL) Addendum",
-                url: "https://mdsattacks.com/"
-            },
-            {
-                title: "Microarchitectural Fill Buffer Data Sampling (MFBDS)",
-                url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
-            },
-            {
-                title: "Microarchitectural Data Sampling (MDS)",
-                url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
-            },
-        ],
-        cve: [{
-            title: "CVE-2018-12130",
-            url: "https://nvd.nist.gov/vuln/detail/CVE-2018-12130"
-        }],
-        affects: [
-            {
-                title: "Intel",
-                url: "https://software.intel.com/security-software-guidance/software-guidance/microarchitectural-data-sampling"
-            },
-        ],
-        poc: [{
-            title: "https://github.com/vusec/ridl",
-            url: "https://github.com/vusec/ridl",
-        }],
-        color: color.works
-    },
-    {
-        id: 68,
-        title: "Meltdown-AC-LP",
-        alias: "RIDL",
-        img: "mds.svg",
-        father: 9,
-        description: "The RIDL addendum explained that misaligned loads due to the AC flag may leak data from load ports. Interestingly, in contrast to the main RIDL variant Meltdown-P-LFB exploiting page faults, Meltdown-AC-LP may work even on processors enumerating RDCL_NO silicon mitigations.",
-        sources: [
-            sources["RIDLAddendum1"],
-            sources["VanSchaik2019"],
-            sources["Falk2019"],
-            sources["IntelMDS"],
-        ],
-        names: [
-            {
-                title: "Rogue In-flight Data Load (RIDL) Addendum",
-                url: "https://mdsattacks.com/"
-            },
-            {
-                title: "Microarchitectural Load Port Data Sampling (MLPDS)",
-                url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
-            },
-            {
-                title: "Microarchitectural Data Sampling (MDS)",
-                url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
-            },
-        ],
-        cve: [{
-            title: "CVE-2018-12127",
-            url: "https://nvd.nist.gov/vuln/detail/CVE-2018-12127"
-        }],
-        affects: [
-            {
-                title: "Intel",
-                url: "https://software.intel.com/security-software-guidance/software-guidance/microarchitectural-data-sampling"
-            },
-        ],
-        poc: [{
-            title: "https://github.com/vusec/ridl",
-            url: "https://github.com/vusec/ridl",
-        }],
-        color: color.works
-    },
-    {
-        id: 10,
-        title: "Meltdown-DE",
-        father: 3,
-        description: "On the ARM microarchitectures we tested, division by zero produces no exception, merely yielding zero. As there is no fault, we do not count this as a Meltdown variant on ARM. On x86, the division raises a divide-by-zero exception (#DE). On both the AMD and Intel microarchitectures we tested, the CPU continues with transient execution after the exception, using zero as the result of the division. Thus the division itself does not leak a value (for example the numerator) but subsequent transient execution can still be used to leak values.", 
-        sources: [
-            sources["Canella2018"]
-        ],
-        poc: [{
-            title: "https://github.com/IAIK/transientfail",
-            url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/DE"
-        }],
-        affects: [
-            {
-                title: "Intel",
-            },
-            {
-                title: "AMD",
-            },
-        ],
-        color: color.works
-    },
-    {
-        id: 11,
-        title: "Meltdown-PF",
-        img: "pte.svg",
-        father: 3,
-        description: "The category of Meltdown attacks caused by a page fault. As there are many possibilities for a page fault, the attacks are further classified by the bit in the page-table entry causing the page fault.",
-        sources: [
-            sources["Canella2018"]
-        ],
-        color: color.group
-    },
-    {
-        id: 12,
-        title: "Meltdown-UD",
-        father: 3,
-        description: "For our original paper we did not succeed in transiently executing instructions following an invalid opcode. Google's Safeside project subsequently achieved this on ARM, and we have updated our PoC accordingly. We suspect that on Intel and AMD CPUs exceptions during instruction fetch or decode are immediately handled by the CPU, without first buffering the offending instruction in the ROB. Hence, invalid opcodes would only leak if the microarchitectural effect is an effect caused by the invalid opcode itself, rather than by subsequent transient instructions.",
-        sources: [
-            sources["Canella2018"]
-        ],
-        poc: [{
-            title: "https://github.com/IAIK/transientfail",
-            url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/UD"
-        },
-        {
-            title: "https://github.com/google/safeside",
-            url: "https://github.com/google/safeside/blob/master/demos/meltdown_ud.cc"
-        }],
-        affects: [{
-            title: "ARM",
-        }],
-        color: color.works
-    },
-    {
-        id: 13,
-        title: "Meltdown-SS",
-        father: 3,
-        description: "We reliably found in our experiments on Intel CPUs that we cannot transiently leak the results of out-of-limit segment accesses. We suspect that, due to the simplistic IA32 segmentation design, segment limits are validated early-on, and immediately raise a #GP or #SS (stack-segment fault) exception, without sending the offending instruction to the ROB. However, we have successfully reproduced Meltdown-SS on some AMD microarchitectures, which is consistent with AMD's documentation that #SS does not suppress speculation.",
-        sources: [
-            sources["Canella2018"]
-        ],
-        poc: [{
-            title: "https://github.com/IAIK/transientfail",
-            url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/SS"
-        }],
-        affects: [
-            {
-                title: "AMD",
-                url: "https://www.amd.com/system/files/documents/security-whitepaper.pdf"
-            }
-        ],
-        color: color.works
-    },
-    {
-        id: 14,
-        title: "Meltdown-BR",
-        father: 3,
-        description: "A Meltdown-BR attack exploits transient execution following a #BR exception to encode out-of-bounds secrets that are never architecturally visible. As such, Meltdown-BR is an exception-driven alternative for Spectre-PHT. Using such an attack, an attcker can leak data safeguarded by either an IA32 bound instruction (Intel, AMD), or state-of-the-art MPX protection (Intel-only). This is the first experiment demonstrating a Meltdown-type transient execution attack exploiting delayed exception handling on AMD CPUs.",
-        sources: [
-            sources["Intel2018"],
-            sources["Canella2018"]
-        ],
-        poc: [{
-            title: "https://github.com/IAIK/transientfail",
-            url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/BR"
-        }],
-        color: color.group
-    },
-    {
-        id: 15,
-        title: "Meltdown-GP",
-        father: 3,
-        description: "Similar to page faults, x86 general protection faults (#GP) have been abused in multiple Meltdown-type attacks. We hence categorize further based on #GP cause and targeted microarchitectural buffer.",
-        todo: "While we have done our best to explore all potentially exploitable causes for #GP exceptions in the x86 architecture, we encourage future research to further investigate potential Meltdown-GP variants.",
-        sources: [
-            sources["Canella2018"],
-            sources["ARM2018"],
-            sources["Intel2018"],
-            sources["Canella2019"]
-        ],
-        color: color.group
-    },
-    {
-        id: 16,
-        title: "Meltdown-US",
-        img: "pte-us.svg",
-        father: 11,
-        description: "Modern CPUs commonly feature a “user/supervisor” (U/S) pagetable attribute to denote a virtual memory page as belonging to the OS kernel. Page faults raised by the U/S attribute can be abused to read cached kernel secrets, as well as to extract data from other microarchitectural buffers. We therefore categorize Meltdown-US further by the leakage source.",
-        sources: [
-            sources["Lipp2018"],
-            sources["Schwarz2019"],
-            sources["Canella2019"],
-            sources["Canella2018"]
-        ],
-        color: color.group
-    },
-    {
-        id: 17,
-        title: "Meltdown-P",
-        img: "pte-p.svg",
-        father: 11,
-        description: "Meltdown-P exploits transient execution following a page fault when accessing unmapped pages (present bit clear). As with the U/S attribute, page faults caused by the present bit have been abused to extract data from a variety of buffers. We therefore categorize Meltdown-P further by the leakage source.",
-        sources: [
-            sources["VanBulck2018"],
-            sources["VanSchaik2019"],
-            sources["Canella2019"],
-            sources["Canella2018"]
-        ],
-        color: color.group
-    },
-    {
-        id: 18,
-        title: "Meltdown-RW",
-        img: "pte-rw.svg",
-        alias: "v1.2",
-        father: 11,
-        description: "Kiriansky and Waldspurger presented the first Meltdown-type attack that bypasses page-table based access rights within the current privilege level. Specifically, they showed that transient execution does not respect the “read/write” page-table attribute. The ability to transiently overwrite read-only data within the current privilege level can bypass software-based sandboxes which rely on hardware enforcement of read-only memory.",
-        sources: [
-            sources["Kiriansky2018"],
-            sources["Canella2018"]
-        ],
-        poc: [{
-            title: "https://github.com/IAIK/transientfail",
-            url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/RW"
-        }],
-        names: [
-            {
-                title: "Variant 1.2",
-                url: "https://arxiv.org/pdf/1807.03757.pdf"
-            },
+    // {
+    //     id: 8,
+    //     title: "Meltdown-NM-REG",
+    //     alias: "LazyFP",
+    //     father: 3,
+    //     description: "During a context switch, the OS has to save all the registers, including the floating point unit (FPU) and SIMD registers. These latter registers are large and saving them would slow down context switches. Therefore, CPUs allow for a lazy state switch, meaning that instead of saving the registers, the FPU is simply marked as “not available”. The first FPU instruction issued after the FPU was marked as “not available” causes a  device-not-available (#NM) exception, allowing the OS to save the FPU state of previous execution context before marking the FPU as available again. <p/> Stecklina and Prescher propose an attack on the above lazy state switch mechanism. The attack consists of three steps. In the first step, a victim performs operations loading data into the FPU registers. Then, in the second step, the CPUswitches to the attacker and marks the FPU as “not available”. The attacker now issues an instruction that uses the FPU, which generates an #NM fault. Before the faulting instruction retires, however, the CPU has already transiently executed the following instructions using data from the previous context. As such, analogous to previous Meltdown-type attacks, a malicious transient instruction sequence following the faulting instruction can encode the unauthorized FPU register contents through a microarchitectural covert channel.",
+    //     sources: [
+    //         sources["Stecklina2018"],
+    //         sources["Canella2018"]
+    //     ],
+    //     names: [
+    //         {
+    //             title: "Lazy FP State Restore (LazyFP)",
+    //             url: "https://www.cyberus-technology.de/posts/2018-06-06-intel-lazyfp-vulnerability.html"
+    //         },
+    //     ], 
+    //     cve: [{
+    //         title: "CVE-2018-3665",
+    //         url: "https://nvd.nist.gov/vuln/detail/CVE-2018-3665"
+    //     }],
+    //     poc: [{
+    //         title: "https://github.com/IAIK/transientfail",
+    //         url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/NM"
+    //     }],
+    //     affects: [
+    //         {
+    //             title: "Intel",
+    //             url: "https://www.intel.com/content/www/us/en/security-center/advisory/intel-sa-00145.html"
+    //         },
+    //     ],
+    //     color: color.works
+    // },
+    // {
+    //     id: 9,
+    //     title: "Meltdown-AC",
+    //     alias: "",
+    //     father: 3,
+    //     description: "Upon detecting an unaligned memory operand, the CPU may generate an alignment-check exception (#AC) when the EFLAGS.AC flag is set. In our tests on Intel CPUs, we were unable to transiently encode the results of unaligned memory accesses. We suspect that this is because #AC is generated early in the pipeline, even before the operand’s virtual address is translated to a physical one. However, this appears not to be the case on some AMD and ARM microarchitectures, on which it is possible to transiently leak data after the exception.",
+    //     sources: [
+    //         sources["Canella2018"]
+    //     ],
+    //     poc: [{
+    //         title: "https://github.com/IAIK/transientfail",
+    //         url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/AC"
+    //     }],
+    //     affects: [
+    //         {
+    //             title: "AMD",
+    //             url: "https://www.amd.com/system/files/documents/security-whitepaper.pdf"
+    //         },
+    //         {
+    //             title: "ARM",
+    //         },
+    //     ],
+    //     color: color.group
+    // },
+    // {
+    //     id: 67,
+    //     title: "Meltdown-AC-LFB",
+    //     alias: "RIDL",
+    //     img: "mds.svg",
+    //     father: 9,
+    //     description: "The RIDL addendum explained that misaligned loads due to the AC flag may leak data from line-fill buffers. Interestingly, in contrast to the main RIDL variant Meltdown-P-LFB exploiting page faults, Meltdown-AC-LFB may work even on processors enumerating RDCL_NO silicon mitigations.",
+    //     sources: [
+    //         sources["RIDLAddendum1"],
+    //         sources["VanSchaik2019"],
+    //         sources["IntelMDS"],
+    //     ],
+    //     names: [
+    //         {
+    //             title: "Rogue In-flight Data Load (RIDL) Addendum",
+    //             url: "https://mdsattacks.com/"
+    //         },
+    //         {
+    //             title: "Microarchitectural Fill Buffer Data Sampling (MFBDS)",
+    //             url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
+    //         },
+    //         {
+    //             title: "Microarchitectural Data Sampling (MDS)",
+    //             url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
+    //         },
+    //     ],
+    //     cve: [{
+    //         title: "CVE-2018-12130",
+    //         url: "https://nvd.nist.gov/vuln/detail/CVE-2018-12130"
+    //     }],
+    //     affects: [
+    //         {
+    //             title: "Intel",
+    //             url: "https://software.intel.com/security-software-guidance/software-guidance/microarchitectural-data-sampling"
+    //         },
+    //     ],
+    //     poc: [{
+    //         title: "https://github.com/vusec/ridl",
+    //         url: "https://github.com/vusec/ridl",
+    //     }],
+    //     color: color.works
+    // },
+    // {
+    //     id: 68,
+    //     title: "Meltdown-AC-LP",
+    //     alias: "RIDL",
+    //     img: "mds.svg",
+    //     father: 9,
+    //     description: "The RIDL addendum explained that misaligned loads due to the AC flag may leak data from load ports. Interestingly, in contrast to the main RIDL variant Meltdown-P-LFB exploiting page faults, Meltdown-AC-LP may work even on processors enumerating RDCL_NO silicon mitigations.",
+    //     sources: [
+    //         sources["RIDLAddendum1"],
+    //         sources["VanSchaik2019"],
+    //         sources["Falk2019"],
+    //         sources["IntelMDS"],
+    //     ],
+    //     names: [
+    //         {
+    //             title: "Rogue In-flight Data Load (RIDL) Addendum",
+    //             url: "https://mdsattacks.com/"
+    //         },
+    //         {
+    //             title: "Microarchitectural Load Port Data Sampling (MLPDS)",
+    //             url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
+    //         },
+    //         {
+    //             title: "Microarchitectural Data Sampling (MDS)",
+    //             url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
+    //         },
+    //     ],
+    //     cve: [{
+    //         title: "CVE-2018-12127",
+    //         url: "https://nvd.nist.gov/vuln/detail/CVE-2018-12127"
+    //     }],
+    //     affects: [
+    //         {
+    //             title: "Intel",
+    //             url: "https://software.intel.com/security-software-guidance/software-guidance/microarchitectural-data-sampling"
+    //         },
+    //     ],
+    //     poc: [{
+    //         title: "https://github.com/vusec/ridl",
+    //         url: "https://github.com/vusec/ridl",
+    //     }],
+    //     color: color.works
+    // },
+    // {
+    //     id: 10,
+    //     title: "Meltdown-DE",
+    //     father: 3,
+    //     description: "On the ARM microarchitectures we tested, division by zero produces no exception, merely yielding zero. As there is no fault, we do not count this as a Meltdown variant on ARM. On x86, the division raises a divide-by-zero exception (#DE). On both the AMD and Intel microarchitectures we tested, the CPU continues with transient execution after the exception, using zero as the result of the division. Thus the division itself does not leak a value (for example the numerator) but subsequent transient execution can still be used to leak values.", 
+    //     sources: [
+    //         sources["Canella2018"]
+    //     ],
+    //     poc: [{
+    //         title: "https://github.com/IAIK/transientfail",
+    //         url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/DE"
+    //     }],
+    //     affects: [
+    //         {
+    //             title: "Intel",
+    //         },
+    //         {
+    //             title: "AMD",
+    //         },
+    //     ],
+    //     color: color.works
+    // },
+    // {
+    //     id: 11,
+    //     title: "Meltdown-PF",
+    //     img: "pte.svg",
+    //     father: 3,
+    //     description: "The category of Meltdown attacks caused by a page fault. As there are many possibilities for a page fault, the attacks are further classified by the bit in the page-table entry causing the page fault.",
+    //     sources: [
+    //         sources["Canella2018"]
+    //     ],
+    //     color: color.group
+    // },
+    // {
+    //     id: 12,
+    //     title: "Meltdown-UD",
+    //     father: 3,
+    //     description: "For our original paper we did not succeed in transiently executing instructions following an invalid opcode. Google's Safeside project subsequently achieved this on ARM, and we have updated our PoC accordingly. We suspect that on Intel and AMD CPUs exceptions during instruction fetch or decode are immediately handled by the CPU, without first buffering the offending instruction in the ROB. Hence, invalid opcodes would only leak if the microarchitectural effect is an effect caused by the invalid opcode itself, rather than by subsequent transient instructions.",
+    //     sources: [
+    //         sources["Canella2018"]
+    //     ],
+    //     poc: [{
+    //         title: "https://github.com/IAIK/transientfail",
+    //         url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/UD"
+    //     },
+    //     {
+    //         title: "https://github.com/google/safeside",
+    //         url: "https://github.com/google/safeside/blob/master/demos/meltdown_ud.cc"
+    //     }],
+    //     affects: [{
+    //         title: "ARM",
+    //     }],
+    //     color: color.works
+    // },
+    // {
+    //     id: 13,
+    //     title: "Meltdown-SS",
+    //     father: 3,
+    //     description: "We reliably found in our experiments on Intel CPUs that we cannot transiently leak the results of out-of-limit segment accesses. We suspect that, due to the simplistic IA32 segmentation design, segment limits are validated early-on, and immediately raise a #GP or #SS (stack-segment fault) exception, without sending the offending instruction to the ROB. However, we have successfully reproduced Meltdown-SS on some AMD microarchitectures, which is consistent with AMD's documentation that #SS does not suppress speculation.",
+    //     sources: [
+    //         sources["Canella2018"]
+    //     ],
+    //     poc: [{
+    //         title: "https://github.com/IAIK/transientfail",
+    //         url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/SS"
+    //     }],
+    //     affects: [
+    //         {
+    //             title: "AMD",
+    //             url: "https://www.amd.com/system/files/documents/security-whitepaper.pdf"
+    //         }
+    //     ],
+    //     color: color.works
+    // },
+    // {
+    //     id: 14,
+    //     title: "Meltdown-BR",
+    //     father: 3,
+    //     description: "A Meltdown-BR attack exploits transient execution following a #BR exception to encode out-of-bounds secrets that are never architecturally visible. As such, Meltdown-BR is an exception-driven alternative for Spectre-PHT. Using such an attack, an attcker can leak data safeguarded by either an IA32 bound instruction (Intel, AMD), or state-of-the-art MPX protection (Intel-only). This is the first experiment demonstrating a Meltdown-type transient execution attack exploiting delayed exception handling on AMD CPUs.",
+    //     sources: [
+    //         sources["Intel2018"],
+    //         sources["Canella2018"]
+    //     ],
+    //     poc: [{
+    //         title: "https://github.com/IAIK/transientfail",
+    //         url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/BR"
+    //     }],
+    //     color: color.group
+    // },
+    // {
+    //     id: 15,
+    //     title: "Meltdown-GP",
+    //     father: 3,
+    //     description: "Similar to page faults, x86 general protection faults (#GP) have been abused in multiple Meltdown-type attacks. We hence categorize further based on #GP cause and targeted microarchitectural buffer.",
+    //     todo: "While we have done our best to explore all potentially exploitable causes for #GP exceptions in the x86 architecture, we encourage future research to further investigate potential Meltdown-GP variants.",
+    //     sources: [
+    //         sources["Canella2018"],
+    //         sources["ARM2018"],
+    //         sources["Intel2018"],
+    //         sources["Canella2019"]
+    //     ],
+    //     color: color.group
+    // },
+    // {
+    //     id: 16,
+    //     title: "Meltdown-US",
+    //     img: "pte-us.svg",
+    //     father: 11,
+    //     description: "Modern CPUs commonly feature a “user/supervisor” (U/S) pagetable attribute to denote a virtual memory page as belonging to the OS kernel. Page faults raised by the U/S attribute can be abused to read cached kernel secrets, as well as to extract data from other microarchitectural buffers. We therefore categorize Meltdown-US further by the leakage source.",
+    //     sources: [
+    //         sources["Lipp2018"],
+    //         sources["Schwarz2019"],
+    //         sources["Canella2019"],
+    //         sources["Canella2018"]
+    //     ],
+    //     color: color.group
+    // },
+    // {
+    //     id: 17,
+    //     title: "Meltdown-P",
+    //     img: "pte-p.svg",
+    //     father: 11,
+    //     description: "Meltdown-P exploits transient execution following a page fault when accessing unmapped pages (present bit clear). As with the U/S attribute, page faults caused by the present bit have been abused to extract data from a variety of buffers. We therefore categorize Meltdown-P further by the leakage source.",
+    //     sources: [
+    //         sources["VanBulck2018"],
+    //         sources["VanSchaik2019"],
+    //         sources["Canella2019"],
+    //         sources["Canella2018"]
+    //     ],
+    //     color: color.group
+    // },
+    // {
+    //     id: 18,
+    //     title: "Meltdown-RW",
+    //     img: "pte-rw.svg",
+    //     alias: "v1.2",
+    //     father: 11,
+    //     description: "Kiriansky and Waldspurger presented the first Meltdown-type attack that bypasses page-table based access rights within the current privilege level. Specifically, they showed that transient execution does not respect the “read/write” page-table attribute. The ability to transiently overwrite read-only data within the current privilege level can bypass software-based sandboxes which rely on hardware enforcement of read-only memory.",
+    //     sources: [
+    //         sources["Kiriansky2018"],
+    //         sources["Canella2018"]
+    //     ],
+    //     poc: [{
+    //         title: "https://github.com/IAIK/transientfail",
+    //         url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/RW"
+    //     }],
+    //     names: [
+    //         {
+    //             title: "Variant 1.2",
+    //             url: "https://arxiv.org/pdf/1807.03757.pdf"
+    //         },
 
-        ],
-        affects: [
-            {
-                title: "Intel",
-                url: "https://www.intel.com/content/www/us/en/support/articles/000029382/processors.html"
-            },
-            {
-                title: "ARM",
-            }
-        ],
-        color: color.works
-    },
-    {
-        id: 19,
-        title: "Meltdown-PK",
-        img: "pte-pk.svg",
-        father: 11,
-        description: "Intel Skylake-SP server CPUs support memory-protection keys for user space (PKU). This feature allows processes to change the access permissions of a page directly from user space, i.e., without requiring a syscall/hypercall. Thus, with PKU, user-space applications can implement efficient hardware-enforced isolation of trusted parts. A Meltdown-PK attack bypasses both the read and write isolation provided by the PKU. Meltdown-PK works if an attacker has code execution in the containing process, even if the attacker cannot execute the <code>wrpkru</code> instruction (e.g., blacklisting).",
-        todo: "We encourage exploring the possibility of using Meltdown-PK to leak data from other buffers apart from the L1 cache and store buffer.",
-        sources: [
-            sources["Canella2018"]
-        ],
-        affects: [
-            {
-                title: "Intel",
-                url: "https://software.intel.com/security-software-guidance/insights/more-information-transient-execution-findings",
-            },
-        ],
-        color: color.group
-    },
-    {
-        id: 70,
-        title: "Meltdown-PK-L1",
-        father: 19,
-        description: "As part of our systematic analysis, we presented a novel Meltdown-PK-L1 variant which bypasses both the read and write isolation provided by PKU to leak unauthorized data from the L1 cache.",
-        sources: [
-            sources["Canella2018"]
-        ],
-        poc: [{
-            title: "https://github.com/IAIK/transientfail",
-            url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/PK"
-        }],
-        affects: [
-            {
-                title: "Intel",
-                url: "https://software.intel.com/security-software-guidance/insights/more-information-transient-execution-findings",
-            },
-        ],
-        color: color.works
-    },
-    {
-        id: 71,
-        title: "Meltdown-PK-SB",
-        alias: "Fallout",
-        img: "mds.svg",
-        father: 19,
-        description: "The Fallout paper includes an experiment to leak data from the store buffer using a faulting load from a page marked as unreadable with PKU.",
-        sources: [
-            sources["Canella2019"]
-        ],
-        affects: [
-            {
-                title: "Intel",
-                url: "https://software.intel.com/security-software-guidance/insights/more-information-transient-execution-findings",
-            },
-        ],
-        names: [
-            {
-                title: "Fallout",
-                url: "https://mdsattacks.com/"
-            },
-            {
-                title: "Microarchitectural Store Buffer Data Sampling (MSBDS)",
-                url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
-            },
-            {
-                title: "Microarchitectural Data Sampling (MDS)",
-                url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
-            },
-        ],
-        cve: [{
-            title: "CVE-2018-12126",
-            url: "https://nvd.nist.gov/vuln/detail/CVE-2018-12126"
-        }],
-        color: color.works
-    },
-    {
-        id: 20,
-        title: "Meltdown-XD",
-        img: "pte-x.svg",
-        father: 11,
-        description: "On our test systems, we did not succeed in transiently executing instructions residing in non-executable memory.",
-        sources: [
-            sources["Canella2018"]
-        ],
-        color: color.fails
-    },
-    {
-        id: 21,
-        title: "Meltdown-SM-SB",
-        alias: "Fallout",
-        img: "mds.svg",
-        father: 11,
-        description: "Although supervisor mode access prevention (SMAP) raises a page fault (#PF) when accessing user-space memory from the kernel, it seems to be free of any Meltdown effect in our experiments. Thus, we were not able to leak user data from kernel space using Meltdown-SM in our experiments.<p/>However, the Fallout paper includes an experiment to leak store buffer data using SMAP exceptions from kernel space.",
-        sources: [
-            sources["Canella2018"],
-            sources["Canella2019"]
-        ],
-        names: [
-            {
-                title: "Fallout",
-                url: "https://mdsattacks.com/"
-            },
-            {
-                title: "Microarchitectural Store Buffer Data Sampling (MSBDS)",
-                url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
-            },
-            {
-                title: "Microarchitectural Data Sampling (MDS)",
-                url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
-            },
-        ],
-        cve: [{
-            title: "CVE-2018-12126",
-            url: "https://nvd.nist.gov/vuln/detail/CVE-2018-12126"
-        }],
-        affects: [
-            {
-                title: "Intel"
-            }
-        ],
-        color: color.works
-    },
-    {
-        id: 22,
-        title: "Meltdown-MPX",
-        father: 14,
-        description: "An attacker can leak data safeguarded by state-of-the-art MPX protection (Intel-only).",
-        sources: [
-            sources["Intel2018"],
-            sources["Canella2018"]
-        ],
-        poc: [{
-            title: "https://github.com/IAIK/transientfail",
-            url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/BR"
-        }],
-        affects: [
-            {
-                title: "Intel",
-                url: "https://software.intel.com/security-software-guidance/insights/more-information-transient-execution-findings",
-            },
-        ],
-        color: color.works
-    },
-    {
-        id: 23,
-        title: "Meltdown-BND",
-        father: 14,
-        description: "An attcker can leak data safeguarded by an IA32 bound instruction (Intel, AMD). This is the first experiment demonstrating a Meltdown-type transient execution attack exploiting delayed exception handling on AMD CPUs.",
-        sources: [
-            sources["Intel2018"],
-            sources["Canella2018"]
-        ],
-        poc: [{
-            title: "https://github.com/IAIK/transientfail",
-            url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/BR"
-        }],
-        affects: [
-            {
-                title: "Intel",
-                url: "https://software.intel.com/security-software-guidance/insights/more-information-transient-execution-findings",
-            },
-            {
-                title: "AMD"
-            }
-        ],
-        color: color.works
-    },
+    //     ],
+    //     affects: [
+    //         {
+    //             title: "Intel",
+    //             url: "https://www.intel.com/content/www/us/en/support/articles/000029382/processors.html"
+    //         },
+    //         {
+    //             title: "ARM",
+    //         }
+    //     ],
+    //     color: color.works
+    // },
+    // {
+    //     id: 19,
+    //     title: "Meltdown-PK",
+    //     img: "pte-pk.svg",
+    //     father: 11,
+    //     description: "Intel Skylake-SP server CPUs support memory-protection keys for user space (PKU). This feature allows processes to change the access permissions of a page directly from user space, i.e., without requiring a syscall/hypercall. Thus, with PKU, user-space applications can implement efficient hardware-enforced isolation of trusted parts. A Meltdown-PK attack bypasses both the read and write isolation provided by the PKU. Meltdown-PK works if an attacker has code execution in the containing process, even if the attacker cannot execute the <code>wrpkru</code> instruction (e.g., blacklisting).",
+    //     todo: "We encourage exploring the possibility of using Meltdown-PK to leak data from other buffers apart from the L1 cache and store buffer.",
+    //     sources: [
+    //         sources["Canella2018"]
+    //     ],
+    //     affects: [
+    //         {
+    //             title: "Intel",
+    //             url: "https://software.intel.com/security-software-guidance/insights/more-information-transient-execution-findings",
+    //         },
+    //     ],
+    //     color: color.group
+    // },
+    // {
+    //     id: 70,
+    //     title: "Meltdown-PK-L1",
+    //     father: 19,
+    //     description: "As part of our systematic analysis, we presented a novel Meltdown-PK-L1 variant which bypasses both the read and write isolation provided by PKU to leak unauthorized data from the L1 cache.",
+    //     sources: [
+    //         sources["Canella2018"]
+    //     ],
+    //     poc: [{
+    //         title: "https://github.com/IAIK/transientfail",
+    //         url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/PK"
+    //     }],
+    //     affects: [
+    //         {
+    //             title: "Intel",
+    //             url: "https://software.intel.com/security-software-guidance/insights/more-information-transient-execution-findings",
+    //         },
+    //     ],
+    //     color: color.works
+    // },
+    // {
+    //     id: 71,
+    //     title: "Meltdown-PK-SB",
+    //     alias: "Fallout",
+    //     img: "mds.svg",
+    //     father: 19,
+    //     description: "The Fallout paper includes an experiment to leak data from the store buffer using a faulting load from a page marked as unreadable with PKU.",
+    //     sources: [
+    //         sources["Canella2019"]
+    //     ],
+    //     affects: [
+    //         {
+    //             title: "Intel",
+    //             url: "https://software.intel.com/security-software-guidance/insights/more-information-transient-execution-findings",
+    //         },
+    //     ],
+    //     names: [
+    //         {
+    //             title: "Fallout",
+    //             url: "https://mdsattacks.com/"
+    //         },
+    //         {
+    //             title: "Microarchitectural Store Buffer Data Sampling (MSBDS)",
+    //             url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
+    //         },
+    //         {
+    //             title: "Microarchitectural Data Sampling (MDS)",
+    //             url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
+    //         },
+    //     ],
+    //     cve: [{
+    //         title: "CVE-2018-12126",
+    //         url: "https://nvd.nist.gov/vuln/detail/CVE-2018-12126"
+    //     }],
+    //     color: color.works
+    // },
+    // {
+    //     id: 20,
+    //     title: "Meltdown-XD",
+    //     img: "pte-x.svg",
+    //     father: 11,
+    //     description: "On our test systems, we did not succeed in transiently executing instructions residing in non-executable memory.",
+    //     sources: [
+    //         sources["Canella2018"]
+    //     ],
+    //     color: color.fails
+    // },
+    // {
+    //     id: 21,
+    //     title: "Meltdown-SM-SB",
+    //     alias: "Fallout",
+    //     img: "mds.svg",
+    //     father: 11,
+    //     description: "Although supervisor mode access prevention (SMAP) raises a page fault (#PF) when accessing user-space memory from the kernel, it seems to be free of any Meltdown effect in our experiments. Thus, we were not able to leak user data from kernel space using Meltdown-SM in our experiments.<p/>However, the Fallout paper includes an experiment to leak store buffer data using SMAP exceptions from kernel space.",
+    //     sources: [
+    //         sources["Canella2018"],
+    //         sources["Canella2019"]
+    //     ],
+    //     names: [
+    //         {
+    //             title: "Fallout",
+    //             url: "https://mdsattacks.com/"
+    //         },
+    //         {
+    //             title: "Microarchitectural Store Buffer Data Sampling (MSBDS)",
+    //             url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
+    //         },
+    //         {
+    //             title: "Microarchitectural Data Sampling (MDS)",
+    //             url: "https://software.intel.com/security-software-guidance/insights/deep-dive-intel-analysis-microarchitectural-data-sampling"
+    //         },
+    //     ],
+    //     cve: [{
+    //         title: "CVE-2018-12126",
+    //         url: "https://nvd.nist.gov/vuln/detail/CVE-2018-12126"
+    //     }],
+    //     affects: [
+    //         {
+    //             title: "Intel"
+    //         }
+    //     ],
+    //     color: color.works
+    // },
+    // {
+    //     id: 22,
+    //     title: "Meltdown-MPX",
+    //     father: 14,
+    //     description: "An attacker can leak data safeguarded by state-of-the-art MPX protection (Intel-only).",
+    //     sources: [
+    //         sources["Intel2018"],
+    //         sources["Canella2018"]
+    //     ],
+    //     poc: [{
+    //         title: "https://github.com/IAIK/transientfail",
+    //         url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/BR"
+    //     }],
+    //     affects: [
+    //         {
+    //             title: "Intel",
+    //             url: "https://software.intel.com/security-software-guidance/insights/more-information-transient-execution-findings",
+    //         },
+    //     ],
+    //     color: color.works
+    // },
+    // {
+    //     id: 23,
+    //     title: "Meltdown-BND",
+    //     father: 14,
+    //     description: "An attcker can leak data safeguarded by an IA32 bound instruction (Intel, AMD). This is the first experiment demonstrating a Meltdown-type transient execution attack exploiting delayed exception handling on AMD CPUs.",
+    //     sources: [
+    //         sources["Intel2018"],
+    //         sources["Canella2018"]
+    //     ],
+    //     poc: [{
+    //         title: "https://github.com/IAIK/transientfail",
+    //         url: "https://github.com/IAIK/transientfail/tree/master/pocs/meltdown/BR"
+    //     }],
+    //     affects: [
+    //         {
+    //             title: "Intel",
+    //             url: "https://software.intel.com/security-software-guidance/insights/more-information-transient-execution-findings",
+    //         },
+    //         {
+    //             title: "AMD"
+    //         }
+    //     ],
+    //     color: color.works
+    // },
     {
         id: 24,
         title: "Cross-address-space",
