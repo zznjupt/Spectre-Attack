@@ -36,10 +36,10 @@
                     <input type="checkbox" class="custom-control-input" id="toggleSpectre" checked>
                     <label class="custom-control-label" for="toggleSpectre">Spectre</label>
                 </div>
-                <div class="custom-control custom-checkbox custom-control-inline">
+                <!-- <div class="custom-control custom-checkbox custom-control-inline">
                     <input type="checkbox" class="custom-control-input" id="toggleMeltdown" checked>
                     <label class="custom-control-label" for="toggleMeltdown">Meltdown</label>
-                </div>
+                </div> -->
 
                 <div class="button-group custom-control-inline">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Buffer</button>
@@ -384,7 +384,7 @@
     
     tree.refresh(data);
 
-    $("#toggleMeltdown").click(filter);
+    // $("#toggleMeltdown").click(filter);
     $("#toggleSpectre").click(filter);
 
     buildIndex();
