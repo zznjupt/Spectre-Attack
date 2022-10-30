@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <meta name="description" content="">
+
+    <title>Transient Execution Attacks</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.2/js/all.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script src="dist/index.js"></script>
+    <script src="dist/FileSaver.min.js"></script>
+    <script src="bibliography.js"></script>
+    <script src="js/filter.js"></script>
+    <script src="js/export.js"></script>
+    <script src="tree.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9">
+            <form onsubmit="filter(); return false;">
+            <div class="form-group">
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" id="toggleSpectre" checked>
+                    <label class="custom-control-label" for="toggleSpectre">Spectre</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" id="toggleMeltdown" checked>
+                    <label class="custom-control-label" for="toggleMeltdown">Meltdown</label>
+                </div>
+
+                <div class="button-group custom-control-inline">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Buffer</button>
+                    <ul class="dropdown-menu">
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleL1" checked>
+                                <label class="custom-control-label" for="toggleL1">L1 cache</label>
+                            </div>
+                        </a></li>
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleLFB" checked>
+                                <label class="custom-control-label" for="toggleLFB">Line fill buffer</label>
+                            </div>
+                        </a></li>
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleSB" checked>
+                                <label class="custom-control-label" for="toggleSB">Store buffer</label>
+                            </div>
+                        </a></li>
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleLP" checked>
+                                <label class="custom-control-label" for="toggleLP">Load ports</label>
+                            </div>
+                        </a></li>
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleREG" checked>
+                                <label class="custom-control-label" for="toggleREG">CPU registers</label>
+                            </div>
+                        </a></li>
+                       <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleMEM" checked>
+                                <label class="custom-control-label" for="toggleMEM">Memory</label>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+
+                <div class="button-group custom-control-inline">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Vendor</button>
+                    <ul class="dropdown-menu">
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleIntel" checked>
+                                <label class="custom-control-label" for="toggleIntel">Intel</label>
+                            </div>
+                        </a></li>
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleARM" checked>
+                                <label class="custom-control-label" for="toggleARM">ARM</label>
+                            </div>
+                        </a></li>
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleAMD" checked>
+                                <label class="custom-control-label" for="toggleAMD">AMD</label>
+                            </div>
+                        </a></li>
+                        <!--
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleIBM" checked>
+                                <label class="custom-control-label" for="toggleIBM">IBM</label>
+                            </div>
+                        </a></li>
+                        -->
+                    </ul>
+                </div>
+
+                <div class="button-group custom-control-inline">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">More filters</button>
+                    <ul class="dropdown-menu">
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleTodo">
+                                <label class="custom-control-label" for="toggleTodo">Unexplored</label>
+                            </div>
+                        </a></li>
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleFails">
+                                <label class="custom-control-label" for="toggleFails">Non-working</label>
+                            </div>
+                        </a></li>
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleWorking" checked>
+                                <label class="custom-control-label" for="toggleWorking">Working</label>
+                            </div>
+                        </a></li>
+                        <hr>
+                        <!--
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="togglePaper" checked>
+                                <label class="custom-control-label" for="togglePaper">Academic paper</label>
+                            </div>
+                        </a></li>
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleNoPaper" checked>
+                                <label class="custom-control-label" for="toggleNoPaper">No academic paper</label>
+                            </div>
+                        </a></li>
+                        <hr>
+                        -->
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="togglePoC" checked>
+                                <label class="custom-control-label" for="togglePoC">With PoC</label>
+                            </div>
+                        </a></li>
+                        <li>&nbsp;<a>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toggleNoPoC" checked>
+                                <label class="custom-control-label" for="toggleNoPoC">Without PoC</label>
+                            </div>
+                        </a></li>
+
+                    </ul>
+                </div>
+
+                <div class="custom-control-inline">
+                    <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" id="search">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                </div>
+
+
+                <div class="button-group custom-control-inline pull-right">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Export</button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="dropdown-item" onclick="exportSVG()">SVG</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="exportTikz()">TikZ</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="exportDOT()">DOT</a></li>
+                    </ul>
+                </div>
+
+                <!-- Modal activation button -->
+                <div class="button-group custom-control-inline">
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cite-modal">Cite</button>
+                </div>
+
+                <div class="button-group custom-control-inline align-bottom">
+                <a class="github-button" href="https://github.com/IAIK/transientfail" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star IAIK/transientfail on GitHub">Star</a>
+                </div>
+
+                <div class="button-group custom-control-inline align-bottom">
+                <a class="github-button" href="https://github.com/IAIK/transientfail/issues" data-size="large" data-show-count="true" aria-label="Issue IAIK/transientfail on GitHub">Issue</a>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="cite-modal" tabindex="1" role="dialog" aria-labelledby="cite-modal" aria-hidden="true">
+                  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="ModalLongTitle">Bibtex Entry</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        @inproceedings{Canella2019extended,<br>
+                        &nbsp;&nbsp;title = {{A Systematic Evaluation of Transient Execution Attacks and Defenses}},<br>
+                        &nbsp;&nbsp;author = {Canella, Claudio and Van Bulck, Jo and Schwarz, Michael and Lipp, Moritz and von Berg, Benjamin and Ortner, Philipp and Piessens, Frank and Evtyushkin, Dmitry and Gruss, Daniel},<br>
+                        &nbsp;&nbsp;booktitle = {USENIX Security Symposium},<br>
+                        &nbsp;&nbsp;year = {2019},<br>
+                        &nbsp;&nbsp;note = {extended classification tree at https://transient.fail/},<br>
+                        &nbsp;}<br>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            </form>
+            <div id="tree" style="height:90vh;width:100%;z-index:0"></div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="card">
+                    <div class="card-header">
+                        Details
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="dbox_title"></h5>
+                        <div id="dbox_img" align="center" style="display: none;"></div>
+                        <p class="card-text" id="dbox">Click on a node for more information.</p>
+                        <p class="card-text" id="dbox_todo" style="display: none;"></p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" id="dbox_h_src" style="display: none;"><b>References</b><br><div id="dbox_src"></div></li>
+                        <li class="list-group-item" id="dbox_h_affected" style="display: none;"><b>Known to be affected</b><br><div id="dbox_affected"></div></li>
+                        <li class="list-group-item" id="dbox_h_aka" style="display: none;"><b>Also known as</b><br><div id="dbox_aka"></div></li>
+                        <li class="list-group-item" id="dbox_h_cve" style="display: none;"><b>CVE</b><br><div id="dbox_cve"></div></li>
+                        <li class="list-group-item" id="dbox_h_poc" style="display: none;"><b>PoC</b><br><div id="dbox_poc"></div></li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<footer class="site-footer container-fluid"><p class="float-left"><a href="https://github.com/IAIK/transientfail" target="_blank">Proof-of-Concept Repository</a></p><p class="float-right"> &copy; 2020 Graz University of Technology. All Rights Reserved. &middot; <a href="https://www.tugraz.at/en/about-this-page/legal-notice" target="_blank">Legal Notice</a></p></footer>
+
+<script>
+    function replaceStr(str, replaceWhat, replaceTo){
+        replaceWhat = replaceWhat.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        var re = new RegExp(replaceWhat, 'gi');
+        return str.replace(re, replaceTo);
+    }
+
+    function highlightSearch(input, term) {
+        if(term === undefined || term == "" || term.trim().length == 0) return input;
+        if(typeof(input) == "string") {
+            return replaceStr(input, term, '<span class="highlight">$&</span>');
+        }
+        if(typeof(input) == "object") {
+            if(Array.isArray(input)) {
+                var new_input = [];
+                for(let element of input) {
+                    new_input.push(highlightSearch(element, term));
+                }
+                return new_input;
+            } else {
+                var new_input = {};
+                for(let key of Object.keys(input)) {
+                    if(key == "url") new_input[key] = input[key];
+                    else new_input[key] = highlightSearch(input[key], term); 
+                }
+                return new_input;
+            }
+        }
+        return input;
+    }
+
+    function showList(list, target, content) {
+        if(list !== undefined && list.length > 0) {
+            $(target).show();
+            var clist = "<small><ul>";
+            for(var s in list) {
+                clist += "<li><b>";
+                if(list[s].url !== undefined) {
+                    clist += "<a href=\"" + list[s].url + "\" target='_blank'>";
+                }
+                clist += list[s].title||"";
+                if(list[s].url !== undefined) {
+                    clist += "</a>";
+                }
+                clist += "</b>";
+                if(list[s].author !== undefined) {
+                    clist += "<br>" + list[s].author;
+                }
+                if(list[s].conference !== undefined) {
+                    clist += " (<i>" + list[s].conference + "</i>)";
+                }
+                if(typeof(list[s]) === "string") {
+                    clist += list[s];
+                }
+                clist += "</li>";
+            }
+            clist += "</small></ul>";
+            $(content).html(clist);
+        } else {
+            $(target).hide();
+        }
+    }
+
+    function popup(node) {
+        var searchterm = $("#search").val();
+    
+        $("#dbox").html(highlightSearch(node.description, searchterm));
+        var title = highlightSearch(node.title, searchterm);
+        if (node.alias) title += " <i>(aka " + highlightSearch(node.alias, searchterm) + ")</i>";
+        $("#dbox_title").html(title);
+
+        if (node.img)
+        {
+            $("#dbox_img").html("<img style=\"max-height:150px; max-width:95%;\" src=\"images/" + node.img + "\"/><p></p>");
+            $("#dbox_img").show();
+        }
+        else
+        {
+            $("#dbox_img").hide();
+        }
+
+        if (node.todo)
+        {
+            $("#dbox_todo").html("<b>Future work</b><br>" + highlightSearch(node.todo, searchterm));
+            $("#dbox_todo").show();
+        }
+        else
+        {
+            $("#dbox_todo").hide();
+        }
+
+        showList(highlightSearch(node.sources, searchterm), "#dbox_h_src", "#dbox_src");
+        showList(highlightSearch(node.names, searchterm), "#dbox_h_aka", "#dbox_aka");
+        showList(highlightSearch(node.cve, searchterm), "#dbox_h_cve", "#dbox_cve");
+        showList(highlightSearch(node.poc, searchterm), "#dbox_h_poc", "#dbox_poc");
+        showList(highlightSearch(node.affects, searchterm), "#dbox_h_affected", "#dbox_affected");
+        
+    }
+    
+    function nodeTemplate(node) {
+        var html = "<div class='box node' style='height:" + node.settings.nodeHeight + "px; width:" + node.settings.nodeWidth + "px; background-color:" + node.data.color + ";' id='db" + node.data.id + "'>";
+        html += "<div><strong>" + node.data.title + "</strong></div>";
+        if(node.data.text_top !== undefined) {
+            html += "<div class='desc_top'>" + node.data.text_top + "</div>";
+        }
+        if(node.data.text_bottom !== undefined) {
+            html += "<div class='desc_bottom'>" + node.data.text_bottom + "</div>";
+        }
+        html += "</div>";
+        return html;
+    }
+
+    var tree = Treeviz.create({
+        htmlId: "tree",
+        idKey: "id",
+        hasFlatData: true,
+        relationnalField: "father",
+        hasPanAndZoom: true,
+        nodeWidth: 180,
+        nodeHeight: 25,
+        mainAxisNodeSpacing: 1.4,
+        secondaryAxisNodeSpacing: 1.05,
+        isHorizontal: true,
+        renderNode: nodeTemplate,
+        linkWidth: (nodeData) => 4,
+        linkShape: "curve",
+        linkColor: (nodeData) => "#B0BEC5" ,
+        onNodeClick: (nodeData) => popup(nodeData.data),
+    });
+    
+    tree.refresh(data);
+
+    $("#toggleMeltdown").click(filter);
+    $("#toggleSpectre").click(filter);
+
+    buildIndex();
+    filter();
+    
+
+    var options = [];
+    $( '.dropdown-menu a' ).on( 'click', function( event ) {
+        var $target = $( event.currentTarget ),
+            val = $target.attr( 'data-value' ),
+            $inp = $target.find( 'input' ),
+            idx;
+
+        if ( ( idx = options.indexOf( val ) ) > -1 ) {
+            options.splice( idx, 1 );
+            setTimeout( function() { $inp.prop( 'checked', false ); filter();}, 0);
+        } else {
+            options.push( val );
+            setTimeout( function() { $inp.prop( 'checked', true ); filter(); }, 0);
+        }
+        $( event.target ).blur();
+        return false;
+    });
+
+    
+</script>
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+</body>
+
+</html>

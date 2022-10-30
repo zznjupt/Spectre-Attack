@@ -1,0 +1,24 @@
+.desc_top {
+    position: fixed;
+    top: -3em;
+}
+.desc_bottom {
+    position: fixed;
+    top: 3em;
+}
+.node {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    z-index: 99;
+}
+.highlight {
+    background-color: yellow;
+}
+ 
+*{
+    font-family:"Roboto";
+}
