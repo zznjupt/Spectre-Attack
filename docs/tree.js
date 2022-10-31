@@ -10,7 +10,7 @@ var data = [ {
         id: 1,
         title: "Spectre-Attack",
         img: "spectre-root.svg",
-        text_top: "prediction",
+        // text_top: "prediction",
         description: "Spectre exploits a performance optimization in modern CPUs. Instead of waiting for the correct resolution of a branch, the CPU tries to predict the most likely outcome of the branch and starts transiently executing along the predicted path. Upon resolving the branch, the CPU discards the results of the transient execution if the prediction was wrong but does not revert changes in the microarchitecture. The prediction is based on events in the past, allowing an attacker to mistrain the predictor to leak data through the microarchitecture that should normally not be accessible to the attacker.",
         sources: [
             sources["Kocher2019"],
@@ -22,7 +22,7 @@ var data = [ {
         title: "Spectre-PHT",
         alias: "Spectre v1",
         img: "spectre.svg",
-        text_top: "microarchitectural buffer",
+        text_top: "Attack object",
         father: 1,
         description: "Kocher et al. first introduced Spectre-PHT, an attack that poisons the Pattern History Table (PHT) to mispredict the direction (taken or not-taken) of conditional branches. Depending on the underlying microarchitecture, the PHT is accessed based on a combination of virtual address bits of the branch instruction plus a hidden Branch History Buffer (BHB) that accumulates global behavior for the last N branches on the same physical core.",
         sources: [
@@ -177,7 +177,7 @@ var data = [ {
         id: 6,
         title: "Cross-address-space",
         father: 2,
-        text_top: "mistraining strategy",
+        text_top: "Mistraining strategy",
         description: "In a cross-address-space scenario, an attacker has two options. In the first, an attacker can mirror the virtual address space layout of the victim on a hyperthread (same physical core) and mistrain at the exact same virtual address as the victim branch. We refer to this as cross-address-space in-place (CA-IP). In the second, the attacker mistrains the PHT on a congruent virtual address in a different address space. We refer to this as cross-address-space out-of-place (CA-OP). Cross-address-space attacks are possible because the PHT is shared between hyperthreads on the same logical core.",
         sources: [
             sources["Canella2018"]
@@ -262,7 +262,7 @@ var data = [ {
         id: 12,
         title: "PHT-CA-IP",
         img: "spectre.svg",
-        text_top: "in-place (IP) vs. out-of-place (OP)",
+        text_top: "In-place & Out-of-place",
         father: 6,
         description: "The cross-address-space, in-place variant of Spectre-PHT.",
         poc: [{
