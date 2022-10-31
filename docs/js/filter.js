@@ -76,8 +76,8 @@ function filter() {
     var show_amd = $("#toggleAMD").prop("checked");
     var show_riscv = $("#toggleRISC-V").prop("checked");
 
-    var search_term = $("#search").val();    
-    var has_search = search_term.trim().length > 0;
+    // var search_term = $("#search").val();    
+    // var has_search = search_term.trim().length > 0;
     
     toggle(function(node) {
         var is_leaf = node.color != color.group && node.color != color.root;
@@ -105,22 +105,22 @@ function filter() {
             if (!include) return false;
         }
          
-        if(has_search && is_leaf) {
-            if(node.description.toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&
-               node.title.toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&   
-               (node.alias||"").toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&
-               (node.affects||[]).map(x => x.title||x).join(" ").toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&
-               (node.names||[]).map(x => x.title||x).join(" ").toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&
-               recursiveFlatten(node.sources).toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&
-               (node.cve||[]).map(x => x.title||x).join(" ").toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&
-               (node.poc||[]).map(x => x.title||x).join(" ").toLowerCase().indexOf(search_term.toLowerCase()) == -1
-            ) return false;
-            /* automatically popup the first leaf hit when searching */
-            else if(!search_popup) {
-                search_popup = 1;
-                popup(node);
-            }
-        }
+        // if(has_search && is_leaf) {
+        //     if(node.description.toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&
+        //        node.title.toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&   
+        //        (node.alias||"").toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&
+        //        (node.affects||[]).map(x => x.title||x).join(" ").toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&
+        //        (node.names||[]).map(x => x.title||x).join(" ").toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&
+        //        recursiveFlatten(node.sources).toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&
+        //        (node.cve||[]).map(x => x.title||x).join(" ").toLowerCase().indexOf(search_term.toLowerCase()) == -1 &&
+        //        (node.poc||[]).map(x => x.title||x).join(" ").toLowerCase().indexOf(search_term.toLowerCase()) == -1
+        //     ) return false;
+        //     /* automatically popup the first leaf hit when searching */
+        //     else if(!search_popup) {
+        //         search_popup = 1;
+        //         popup(node);
+        //     }
+        // }
         return true;
     }
     );
